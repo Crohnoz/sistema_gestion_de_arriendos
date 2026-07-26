@@ -1,46 +1,39 @@
 # Sistema de Administración de Arriendos — Edificio 23 Departamentos
 
-Proyecto React/Vite para uso interno de un edificio de 3 pisos y 23 departamentos.
+Aplicación React/Vite para administrar departamentos, arrendatarios, cobros, vouchers, contratos, boletas y liquidaciones de salida.
 
-## Módulos incluidos
+## Funcionalidades actuales
 
-- Dashboard general
-- Departamentos precargados: 23 unidades, 3 pisos
-- Arrendatarios
-- Cobros y deudas
-- Voucher con folio correlativo
-- Boletas y vencimientos
-- Contratos
-- Asistente IA local basado en reglas
-- Respaldo JSON descargable
-- Búsqueda, creación, edición y eliminación desde la web
-- Sin login ni credenciales
+- Dashboard con deuda, pagos, ocupación y ajustes por redondeo.
+- CRUD completo para departamentos, arrendatarios, cobros, vouchers, boletas, contratos y salidas.
+- Persistencia automática en `localStorage`.
+- Respaldo y restauración mediante archivo JSON.
+- Vouchers con folio correlativo.
+- Redondeo de cobros al múltiplo de $100 más cercano.
+- Registro automático de la diferencia para aplicarla en el cobro siguiente.
+- Liquidación de salida con garantía, deuda, retención por luz pendiente y descuentos.
+- Asistente administrativo basado en reglas y alertas.
+- Interfaz de alta legibilidad pensada para administración diaria.
 
-## Enfoque de UX
+## Regla de redondeo
 
-- Botones grandes
-- Texto legible
-- Flujo simple
-- Uso interno
-- Pensado para administrador adulto de 50–60+ años
+El total calculado se redondea al múltiplo de $100 más cercano. La diferencia se registra con signo contrario como `ajusteSiguiente`, para compensarla en el próximo cobro y mantener trazabilidad contable.
 
-## Ejecutar
+## Desarrollo
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Importante
+## Producción
 
-La “IA” incluida en esta versión es un asistente local basado en reglas:
-- detecta deudas
-- detecta boletas próximas a vencer
-- detecta consumos faltantes
-- detecta departamentos disponibles
+```bash
+npm run build
+```
 
-Siguiente paso técnico recomendado:
-1. Persistencia local con IndexedDB o SQLite/Django.
-2. Generación de voucher PDF.
-3. Calendario real de recordatorios.
-4. Integración opcional con API de IA cuando haya backend.
+El repositorio incluye `netlify.toml` con publicación desde `dist` y redirección SPA.
+
+## Limitación actual
+
+La persistencia es local al navegador. Antes de uso multiusuario o acceso desde varios equipos se debe incorporar autenticación y una base de datos centralizada.
