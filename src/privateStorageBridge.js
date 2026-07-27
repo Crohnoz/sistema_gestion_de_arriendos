@@ -63,6 +63,7 @@ export function createDebouncedWorkspaceWriter({ supabase, workspaceId, onStatus
     try {
       data = JSON.parse(value);
     } catch {
+      latestValue = value;
       onStatus?.("error");
       throw new Error("El estado de la aplicación no contiene JSON válido.");
     }
@@ -73,11 +74,12 @@ export function createDebouncedWorkspaceWriter({ supabase, workspaceId, onStatus
       .eq("id", workspaceId);
 
     if (error) {
+      if (!latestValue) latestValue = value;
       onStatus?.("error");
       throw error;
     }
 
-    onStatus?.("saved");
+    onStatus?.(latestValue ? "saving" : "saved");
   }
 
   function schedule(value) {
