@@ -1,8 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Database, Eye, LoaderCircle, LockKeyhole, LogIn, LogOut, RefreshCw, ShieldCheck } from "lucide-react";
+import {
+  Database,
+  Eye,
+  LoaderCircle,
+  LockKeyhole,
+  LogIn,
+  LogOut,
+  RefreshCw,
+  ShieldCheck,
+  UserPlus,
+} from "lucide-react";
 import RentalAdminApp from "./App.jsx";
-import { createEmptyWorkspace, demoSeed } from "./demoSeed";
+import { demoSeed } from "./demoSeed";
 import { createDebouncedWorkspaceWriter, installPrivateStorageBridge } from "./privateStorageBridge";
 import {
   IS_DEMO,
@@ -39,29 +49,125 @@ function LoadingScreen({ message = "Preparando el sistema…" }) {
 }
 
 function LoginScreen({ supabase, error, setError }) {
-  const [email, setEmail] = useState("");
+  const params = useMemo(() => new URLSearchParams(window.location.search), []);
+  const [mode, setMode] = useState(params.get("invite") === "1" ? "signup" : "login");
+  const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState("");
 
-  async function submit(event) {
+  function switchMode(nextMode) {
+    setMode(nextMode);
+    setError("");
+    setNotice("");
+    setPassword("");
+    setPasswordConfirmation("");
+  }
+
+  async function submitLogin(event) {
     event.preventDefault();
     setSubmitting(true);
     setError("");
+    setNotice("");
 
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
     if (loginError) setError("El correo o la contraseña no son correctos.");
+    setSubmitting(false);
+  }
+
+  async function submitSignup(event) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError("");
+    setNotice("");
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (password !== passwordConfirmation) {
+      setError("Las contraseñas no coinciden.");
+      setSubmitting(false);
+      return;
+    }
+
+    const { data: isInvited, error: invitationError } = await supabase.rpc(
+      "rental_email_is_invited",
+      { invited_email: normalizedEmail },
+    );
+
+    if (invitationError) {
+      setError("No fue posible validar la invitación. Intente nuevamente.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!isInvited) {
+      setError("Este correo no tiene una invitación activa para el edificio.");
+      setSubmitting(false);
+      return;
+    }
+
+    const { data, error: signupError } = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password,
+      options: { emailRedirectTo: window.location.origin },
+    });
+
+    if (signupError) {
+      setError(
+        signupError.message.toLowerCase().includes("registered")
+          ? "Esta cuenta ya fue creada. Use la opción Ingresar."
+          : "No fue posible crear el acceso. Intente nuevamente.",
+      );
+      setSubmitting(false);
+      return;
+    }
+
+    if (data.session) {
+      setNotice("Acceso creado correctamente. Abriendo el sistema…");
+    } else {
+      setNotice("Cuenta creada. Revise su correo y confirme el acceso para ingresar.");
+    }
+
     setSubmitting(false);
   }
 
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="login-icon"><LockKeyhole size={36} /></div>
+        <div className="login-icon">
+          {mode === "login" ? <LockKeyhole size={36} /> : <UserPlus size={36} />}
+        </div>
         <span className="login-eyebrow">Acceso privado</span>
         <h1>{PRODUCT_NAME}</h1>
-        <p>Ingrese con la cuenta autorizada para administrar los datos reales del edificio.</p>
+        <p>
+          {mode === "login"
+            ? "Ingrese a la administración del edificio con su correo y contraseña."
+            : "Cree su contraseña usando el correo que recibió la invitación."}
+        </p>
 
-        <form onSubmit={submit}>
+        <div className="auth-tabs" role="tablist" aria-label="Tipo de acceso">
+          <button
+            type="button"
+            className={mode === "login" ? "active" : ""}
+            onClick={() => switchMode("login")}
+          >
+            Ingresar
+          </button>
+          <button
+            type="button"
+            className={mode === "signup" ? "active" : ""}
+            onClick={() => switchMode("signup")}
+          >
+            Crear acceso
+          </button>
+        </div>
+
+        <form onSubmit={mode === "login" ? submitLogin : submitSignup}>
           <label>
             <span>Correo electrónico</span>
             <input
@@ -73,26 +179,52 @@ function LoginScreen({ supabase, error, setError }) {
             />
           </label>
           <label>
-            <span>Contraseña</span>
+            <span>{mode === "login" ? "Contraseña" : "Cree una contraseña"}</span>
             <input
               type="password"
-              autoComplete="current-password"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
               required
               minLength={12}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
+          {mode === "signup" && (
+            <label>
+              <span>Repita la contraseña</span>
+              <input
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={12}
+                value={passwordConfirmation}
+                onChange={(event) => setPasswordConfirmation(event.target.value)}
+              />
+            </label>
+          )}
           {error && <div className="runtime-error" role="alert">{error}</div>}
+          {notice && <div className="runtime-notice" role="status">{notice}</div>}
           <button className="login-submit" type="submit" disabled={submitting}>
-            {submitting ? <LoaderCircle className="runtime-spinner" size={20} /> : <LogIn size={20} />}
-            {submitting ? "Ingresando…" : "Ingresar"}
+            {submitting ? (
+              <LoaderCircle className="runtime-spinner" size={20} />
+            ) : mode === "login" ? (
+              <LogIn size={20} />
+            ) : (
+              <UserPlus size={20} />
+            )}
+            {submitting
+              ? "Procesando…"
+              : mode === "login"
+                ? "Ingresar"
+                : "Crear mi acceso"}
           </button>
         </form>
 
         <div className="security-note">
           <ShieldCheck size={20} />
-          <span>Sesión autenticada y datos aislados del entorno de demostración.</span>
+          <span>
+            La página guarda los cambios directamente en la base privada. No necesita ingresar ni administrar Supabase.
+          </span>
         </div>
       </section>
     </main>
@@ -113,7 +245,7 @@ function DemoBar() {
   );
 }
 
-function PrivateBar({ email, syncStatus, onLogout }) {
+function PrivateBar({ email, role, syncStatus, onLogout }) {
   const statusText = {
     loading: "Cargando datos…",
     saving: "Guardando cambios…",
@@ -121,12 +253,19 @@ function PrivateBar({ email, syncStatus, onLogout }) {
     error: "Error de sincronización",
   }[syncStatus] || "Conectado";
 
+  const roleText = {
+    owner: "Administrador",
+    manager: "Gestor del edificio",
+    viewer: "Solo lectura",
+  }[role] || "Usuario autorizado";
+
   return (
     <div className="environment-bar private-bar">
       <div>
         <ShieldCheck size={19} />
         <strong>Entorno privado</strong>
         <span>{email}</span>
+        <span className="role-badge">{roleText}</span>
         <span className={`sync-status ${syncStatus}`}><Database size={16} /> {statusText}</span>
       </div>
       <button onClick={onLogout}><LogOut size={17} /> Cerrar sesión</button>
@@ -139,6 +278,7 @@ export default function BootstrapApp() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState("");
   const [syncStatus, setSyncStatus] = useState("loading");
+  const [workspaceRole, setWorkspaceRole] = useState(null);
   const authenticatedUserId = useRef(null);
 
   const supabase = useMemo(() => {
@@ -184,6 +324,7 @@ export default function BootstrapApp() {
       setSession(nextSession);
 
       if (!nextSession) {
+        setWorkspaceRole(null);
         setPhase("unauthenticated");
       } else if (userChanged) {
         setPhase("workspace-loading");
@@ -207,39 +348,34 @@ export default function BootstrapApp() {
       setSyncStatus("loading");
       setError("");
 
-      let { data: workspace, error: selectError } = await supabase
-        .from("rental_workspaces")
-        .select("id, name, data")
-        .eq("owner_id", session.user.id)
+      const { data: membership, error: membershipError } = await supabase
+        .from("rental_workspace_members")
+        .select("role, rental_workspaces!inner(id, name, data)")
+        .eq("user_id", session.user.id)
         .maybeSingle();
 
-      if (selectError) throw selectError;
+      if (membershipError) throw membershipError;
 
-      if (!workspace) {
-        const created = await supabase
-          .from("rental_workspaces")
-          .insert({
-            owner_id: session.user.id,
-            name: "Edificio 23",
-            data: createEmptyWorkspace(),
-          })
-          .select("id, name, data")
-          .single();
+      const relatedWorkspace = Array.isArray(membership?.rental_workspaces)
+        ? membership.rental_workspaces[0]
+        : membership?.rental_workspaces;
 
-        if (created.error) throw created.error;
-        workspace = created.data;
+      if (!membership || !relatedWorkspace) {
+        setPhase("access-denied");
+        return;
       }
 
       if (!active) return;
 
+      setWorkspaceRole(membership.role);
       writer = createDebouncedWorkspaceWriter({
         supabase,
-        workspaceId: workspace.id,
+        workspaceId: relatedWorkspace.id,
         onStatus: setSyncStatus,
       });
 
       uninstallBridge = installPrivateStorageBridge({
-        initialData: workspace.data || createEmptyWorkspace(),
+        initialData: relatedWorkspace.data,
         onPersist: writer,
       });
 
@@ -250,7 +386,7 @@ export default function BootstrapApp() {
     loadWorkspace().catch((workspaceError) => {
       console.error(workspaceError);
       if (!active) return;
-      setError("No fue posible cargar el espacio privado. Revise la configuración y las políticas de acceso.");
+      setError("No fue posible cargar el espacio privado. Revise la conexión e intente nuevamente.");
       setPhase("workspace-error");
       setSyncStatus("error");
     });
@@ -276,6 +412,17 @@ export default function BootstrapApp() {
     return <LoginScreen supabase={supabase} error={error} setError={setError} />;
   }
 
+  if (phase === "access-denied") {
+    return (
+      <main className="runtime-center">
+        <ShieldCheck size={42} />
+        <h1>Cuenta sin acceso</h1>
+        <p>La cuenta fue autenticada, pero no tiene una membresía activa para este edificio.</p>
+        <button onClick={logout}>Cerrar sesión</button>
+      </main>
+    );
+  }
+
   if (phase === "workspace-error") {
     return <main className="runtime-center"><Database size={42} /><h1>No se pudo abrir el sistema</h1><p>{error}</p><button onClick={logout}>Cerrar sesión</button></main>;
   }
@@ -289,7 +436,12 @@ export default function BootstrapApp() {
       {IS_DEMO ? (
         <DemoBar />
       ) : (
-        <PrivateBar email={session?.user?.email || "Usuario autorizado"} syncStatus={syncStatus} onLogout={logout} />
+        <PrivateBar
+          email={session?.user?.email || "Usuario autorizado"}
+          role={workspaceRole}
+          syncStatus={syncStatus}
+          onLogout={logout}
+        />
       )}
       <RentalAdminApp />
     </div>
