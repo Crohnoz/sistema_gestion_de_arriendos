@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Database, Eye, LoaderCircle, LockKeyhole, LogIn, LogOut, RefreshCw, ShieldCheck } from "lucide-react";
 import RentalAdminApp from "./App.jsx";
@@ -78,7 +78,7 @@ function LoginScreen({ supabase, error, setError }) {
               type="password"
               autoComplete="current-password"
               required
-              minLength={8}
+              minLength={12}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
@@ -139,11 +139,17 @@ export default function BootstrapApp() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState("");
   const [syncStatus, setSyncStatus] = useState("loading");
+  const authenticatedUserId = useRef(null);
 
   const supabase = useMemo(() => {
     if (!IS_PRIVATE || !SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
     return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
     });
   }, []);
 
@@ -164,14 +170,24 @@ export default function BootstrapApp() {
     let mounted = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
+      authenticatedUserId.current = data.session?.user?.id || null;
       setSession(data.session);
       setPhase(data.session ? "workspace-loading" : "unauthenticated");
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!mounted) return;
+
+      const nextUserId = nextSession?.user?.id || null;
+      const userChanged = authenticatedUserId.current !== nextUserId;
+      authenticatedUserId.current = nextUserId;
       setSession(nextSession);
-      setPhase(nextSession ? "workspace-loading" : "unauthenticated");
+
+      if (!nextSession) {
+        setPhase("unauthenticated");
+      } else if (userChanged) {
+        setPhase("workspace-loading");
+      }
     });
 
     return () => {
