@@ -1,0 +1,48 @@
+.role-badge{
+  background:rgba(21,63,49,.1);
+  border:1px solid rgba(21,63,49,.18);
+  border-radius:999px;
+  font-weight:750;
+  padding:4px 9px;
+}
+
+.auth-tabs{
+  background:#edf3f8;
+  border-radius:12px;
+  display:grid;
+  gap:5px;
+  grid-template-columns:1fr 1fr;
+  margin-bottom:20px;
+  padding:5px;
+}
+
+.auth-tabs button{
+  background:transparent;
+  border:0;
+  border-radius:9px;
+  color:#506172;
+  cursor:pointer;
+  font:inherit;
+  font-weight:800;
+  padding:9px 12px;
+}
+
+.auth-tabs button.active{
+  background:white;
+  box-shadow:0 2px 8px rgba(23,63,95,.1);
+  color:#173f5f;
+}
+
+.runtime-notice{
+  background:#edf9f2;
+  border:1px solid #9ed4b5;
+  border-radius:10px;
+  color:#225e3d;
+  font-size:.9rem;
+  line-height:1.4;
+  padding:10px 12px;
+}
+
+@media (max-width:760px){
+  :root{--runtime-bar-height:112px}
+}
