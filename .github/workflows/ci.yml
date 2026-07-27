@@ -35,6 +35,15 @@ jobs:
       - name: Build private shell
         env:
           VITE_APP_MODE: private
-          VITE_SUPABASE_URL: https://example.supabase.co
-          VITE_SUPABASE_ANON_KEY: public-anon-key-for-build-validation
+          VITE_PRODUCT_NAME: Administración Edificio 23
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder-publishable-key
         run: npm run build
+
+      - name: Upload private build
+        uses: actions/upload-artifact@v4
+        with:
+          name: private-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 3
