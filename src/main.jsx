@@ -6,6 +6,7 @@ import "./enhancements.css";
 import "./typography.css";
 import "./thermalPrint.css";
 import "./runtime.css";
+import "./authEnhancements.css";
 import "./thermalPrint.js";
 
 createRoot(document.getElementById("root")).render(<BootstrapApp />);
