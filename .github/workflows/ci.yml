@@ -6,6 +6,7 @@ on:
       - main
       - feature/**
       - hotfix/**
+      - fix/**
   pull_request:
     branches:
       - main
@@ -30,6 +31,9 @@ jobs:
 
       - name: Validate demo seed
         run: node scripts/validate-demo-seed.mjs
+
+      - name: Validate environment routing
+        run: node scripts/validate-environment-routing.mjs
 
       - name: Build demo
         env:
