@@ -1,6 +1,9 @@
 const normalizeHostname = (hostname = "") => hostname.trim().toLowerCase();
 const normalizeMode = (mode = "") => mode.trim().toLowerCase();
 
+const PRIVATE_NETLIFY_SITES = ["arrendia", "arriendos-23"];
+const DEMO_NETLIFY_SITES = ["crohnoz-property", "sistema-administrativo-arriendos"];
+
 export function isNetlifySiteOrDeploy(hostname, siteName) {
   const normalizedHostname = normalizeHostname(hostname);
   return (
@@ -9,18 +12,28 @@ export function isNetlifySiteOrDeploy(hostname, siteName) {
   );
 }
 
+function matchesAnyNetlifySite(hostname, siteNames) {
+  return siteNames.some((siteName) => isNetlifySiteOrDeploy(hostname, siteName));
+}
+
+export function isPrivateHostname(hostname) {
+  return matchesAnyNetlifySite(hostname, PRIVATE_NETLIFY_SITES);
+}
+
+export function isDemoHostname(hostname) {
+  return matchesAnyNetlifySite(hostname, DEMO_NETLIFY_SITES);
+}
+
 export function resolveAppMode(hostname, environmentMode = "") {
-  if (isNetlifySiteOrDeploy(hostname, "arriendos-23")) return "private";
-  if (isNetlifySiteOrDeploy(hostname, "sistema-administrativo-arriendos")) return "demo";
+  if (isPrivateHostname(hostname)) return "private";
+  if (isDemoHostname(hostname)) return "demo";
 
   return normalizeMode(environmentMode) || "demo";
 }
 
 export function resolveProductName(hostname, configuredName = "") {
-  if (isNetlifySiteOrDeploy(hostname, "arriendos-23")) return "Arriendos 23";
-  if (isNetlifySiteOrDeploy(hostname, "sistema-administrativo-arriendos")) {
-    return "Sistema Administrativo de Arriendos · Demo";
-  }
+  if (isPrivateHostname(hostname)) return "Arrendía";
+  if (isDemoHostname(hostname)) return "Crohnoz Property · Demo";
 
   return configuredName || "Sistema Administrativo de Arriendos";
 }
