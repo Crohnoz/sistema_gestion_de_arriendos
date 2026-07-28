@@ -1,0 +1,366 @@
+:root{
+  --arrendia-navy:#0b2942;
+  --arrendia-blue:#1c5b87;
+  --arrendia-mint:#55d7ae;
+  --arrendia-ink:#13283a;
+  --arrendia-muted:#647687;
+  --arrendia-line:#d8e3eb;
+}
+
+body .login-page{
+  align-items:center;
+  background:
+    radial-gradient(circle at 14% 12%,rgba(85,215,174,.16),transparent 28%),
+    radial-gradient(circle at 88% 86%,rgba(61,137,190,.15),transparent 30%),
+    linear-gradient(145deg,#eef5f8 0%,#f8fbfd 52%,#edf4f8 100%);
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:100svh;
+  overflow:auto;
+  padding:32px 20px;
+  position:relative;
+  text-align:left;
+}
+
+body .login-page::before{
+  background:
+    linear-gradient(rgba(23,76,115,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(23,76,115,.035) 1px,transparent 1px);
+  background-size:46px 46px;
+  content:"";
+  inset:0;
+  mask-image:radial-gradient(circle at center,#000 0%,transparent 72%);
+  pointer-events:none;
+  position:absolute;
+}
+
+body .login-page .login-card{
+  animation:arrendia-card-enter .48s cubic-bezier(.2,.78,.25,1) both;
+  background:rgba(255,255,255,.985);
+  border:1px solid rgba(184,204,219,.72);
+  border-radius:28px;
+  box-shadow:
+    0 28px 70px rgba(20,55,78,.14),
+    0 8px 24px rgba(20,55,78,.08),
+    inset 0 1px 0 rgba(255,255,255,.94);
+  box-sizing:border-box;
+  margin:0;
+  max-width:480px;
+  overflow:hidden;
+  padding:38px 40px 32px;
+  position:relative;
+  text-align:left;
+  width:100%;
+  z-index:1;
+}
+
+body .login-page .login-card::before{
+  background:linear-gradient(90deg,var(--arrendia-mint),#65b8e4 58%,rgba(101,184,228,0));
+  content:"";
+  height:4px;
+  left:0;
+  position:absolute;
+  right:0;
+  top:0;
+}
+
+body .login-page .login-card::after{
+  background:radial-gradient(circle,rgba(85,215,174,.13),transparent 68%);
+  content:"";
+  height:190px;
+  pointer-events:none;
+  position:absolute;
+  right:-82px;
+  top:-82px;
+  width:190px;
+}
+
+body .login-page .login-icon{
+  animation:arrendia-mark-enter .68s cubic-bezier(.2,.82,.25,1) .05s both,arrendia-mark-float 5.8s ease-in-out 1s infinite;
+  background-color:transparent;
+  background-image:url('/arrendia-mark.svg?v=4');
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+  border-radius:26px 26px 34px 34px;
+  box-shadow:0 15px 34px rgba(11,41,66,.23);
+  display:block;
+  height:88px;
+  margin:0 auto 22px;
+  position:relative;
+  transform-origin:center;
+  width:88px;
+  z-index:2;
+}
+
+body .login-page .login-icon::before{
+  animation:arrendia-logo-pulse 5.8s ease-in-out 1.2s infinite;
+  background:radial-gradient(circle,rgba(85,215,174,.31),rgba(49,126,177,.1) 48%,transparent 70%);
+  border-radius:50%;
+  content:"";
+  inset:-17px;
+  pointer-events:none;
+  position:absolute;
+  z-index:-1;
+}
+
+body .login-page .login-icon::after{
+  animation:arrendia-logo-ring 5.8s ease-in-out 1.4s infinite;
+  border:1px solid rgba(85,215,174,.42);
+  border-radius:32px 32px 40px 40px;
+  content:"";
+  inset:-8px;
+  opacity:0;
+  pointer-events:none;
+  position:absolute;
+}
+
+body .login-page .login-icon > svg{
+  display:none!important;
+}
+
+body .login-page .login-eyebrow{
+  color:#24755c;
+  display:block;
+  font-size:.74rem;
+  font-weight:850;
+  letter-spacing:.14em;
+  line-height:1.2;
+  margin:0;
+  position:relative;
+  text-align:center;
+  text-transform:uppercase;
+  z-index:1;
+}
+
+body .login-page .login-card h1{
+  color:var(--arrendia-ink);
+  font-size:2.45rem;
+  font-weight:850;
+  letter-spacing:-.055em;
+  line-height:1.05;
+  margin:9px 0 10px;
+  position:relative;
+  text-align:center;
+  z-index:1;
+}
+
+body .login-page .login-card > p{
+  color:var(--arrendia-muted);
+  font-size:.98rem;
+  line-height:1.55;
+  margin:0 auto 25px;
+  max-width:350px;
+  position:relative;
+  text-align:center;
+  z-index:1;
+}
+
+body .login-page .auth-tabs{
+  background:#edf3f7;
+  border:1px solid #e0e9ef;
+  border-radius:14px;
+  display:grid;
+  gap:4px;
+  grid-template-columns:1fr 1fr;
+  margin:0 0 23px;
+  padding:5px;
+  position:relative;
+  z-index:1;
+}
+
+body .login-page .auth-tabs button{
+  background:transparent;
+  border:0;
+  border-radius:10px;
+  color:#52677a;
+  cursor:pointer;
+  font:inherit;
+  font-size:.93rem;
+  font-weight:780;
+  min-height:42px;
+  padding:9px 12px;
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+
+body .login-page .auth-tabs button.active{
+  background:#fff;
+  box-shadow:0 4px 12px rgba(17,55,83,.1);
+  color:var(--arrendia-navy);
+  transform:translateY(-1px);
+}
+
+body .login-page .login-card form{
+  display:grid;
+  gap:17px;
+  position:relative;
+  z-index:1;
+}
+
+body .login-page .login-card label{
+  display:grid;
+  gap:8px;
+}
+
+body .login-page .login-card label span{
+  color:#253c4f;
+  font-size:.87rem;
+  font-weight:800;
+}
+
+body .login-page .login-card input{
+  background-color:#fbfdff;
+  background-position:15px center;
+  background-repeat:no-repeat;
+  background-size:19px 19px;
+  border:1px solid var(--arrendia-line);
+  border-radius:13px;
+  box-sizing:border-box;
+  color:var(--arrendia-ink);
+  font-size:1rem;
+  min-height:53px;
+  outline:none;
+  padding:12px 15px 12px 45px;
+  transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease;
+  width:100%;
+}
+
+body .login-page .login-card input[type="email"]{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23577084' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='16' x='2' y='4' rx='3'/%3E%3Cpath d='m22 7-8.8 5.5a2.3 2.3 0 0 1-2.4 0L2 7'/%3E%3C/svg%3E");
+}
+
+body .login-page .login-card input[type="password"]{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23577084' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='13' x='3' y='9' rx='3'/%3E%3Cpath d='M7 9V6a5 5 0 0 1 10 0v3'/%3E%3Cpath d='M12 14v3'/%3E%3C/svg%3E");
+}
+
+body .login-page .login-card input:focus{
+  background-color:#fff;
+  border-color:#3f88b7;
+  box-shadow:0 0 0 4px rgba(63,136,183,.12);
+}
+
+body .login-page .auth-link-button{
+  color:#246d9b;
+  font-size:.86rem;
+  font-weight:700;
+  justify-self:end;
+  margin-top:-7px;
+  text-decoration:none;
+  text-underline-offset:4px;
+}
+
+body .login-page .login-submit{
+  align-items:center;
+  background:linear-gradient(135deg,#1b5a85,#0b304d);
+  border:0;
+  border-radius:13px;
+  box-shadow:0 10px 22px rgba(17,62,92,.18);
+  color:#fff;
+  cursor:pointer;
+  display:flex;
+  font-size:1rem;
+  font-weight:820;
+  gap:9px;
+  justify-content:center;
+  min-height:53px;
+  overflow:hidden;
+  padding:12px 16px;
+  position:relative;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+
+body .login-page .login-submit:hover:not(:disabled){
+  box-shadow:0 14px 28px rgba(17,62,92,.24);
+  filter:saturate(1.06);
+  transform:translateY(-1px);
+}
+
+body .login-page .security-note{
+  align-items:flex-start;
+  background:#f1faf6;
+  border:1px solid #d3eee2;
+  border-radius:13px;
+  color:#416c5c;
+  display:flex;
+  gap:9px;
+  margin-top:23px;
+  padding:13px 14px;
+  position:relative;
+  z-index:1;
+}
+
+body .login-page .security-note svg{
+  color:#288768;
+  flex:0 0 auto;
+  margin-top:2px;
+}
+
+body .login-page .security-note span{
+  font-size:.8rem;
+  line-height:1.45;
+}
+
+@keyframes arrendia-card-enter{
+  from{opacity:0;transform:translateY(14px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes arrendia-mark-enter{
+  from{opacity:0;transform:translateY(9px) scale(.84) rotate(-4deg)}
+  to{opacity:1;transform:translateY(0) scale(1) rotate(0)}
+}
+
+@keyframes arrendia-mark-float{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-5px) rotate(.55deg)}
+}
+
+@keyframes arrendia-logo-pulse{
+  0%,100%{opacity:.38;transform:scale(.94)}
+  50%{opacity:.76;transform:scale(1.08)}
+}
+
+@keyframes arrendia-logo-ring{
+  0%,62%,100%{opacity:0;transform:scale(.92)}
+  72%{opacity:.52}
+  88%{opacity:0;transform:scale(1.13)}
+}
+
+@media (max-width:620px){
+  body .login-page{
+    justify-content:flex-start;
+    padding:22px 14px 26px;
+  }
+
+  body .login-page .login-card{
+    border-radius:23px;
+    margin:auto 0;
+    padding:30px 22px 24px;
+  }
+
+  body .login-page .login-icon{
+    height:76px;
+    margin-bottom:19px;
+    width:76px;
+  }
+
+  body .login-page .login-card h1{
+    font-size:2.12rem;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  body .login-page .login-card,
+  body .login-page .login-icon,
+  body .login-page .login-icon::before,
+  body .login-page .login-icon::after{
+    animation:none;
+  }
+
+  body .login-page .auth-tabs button,
+  body .login-page .login-submit{
+    transition:none;
+  }
+}
