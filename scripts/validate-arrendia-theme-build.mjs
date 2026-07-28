@@ -1,32 +1,44 @@
-import { readdir, readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const assetsDirectory = path.resolve("dist/assets");
-const entries = await readdir(assetsDirectory, { withFileTypes: true });
-const cssFiles = entries
-  .filter((entry) => entry.isFile() && entry.name.endsWith(".css"))
-  .map((entry) => path.join(assetsDirectory, entry.name));
+const indexPath = path.resolve("dist/index.html");
+const themePath = path.resolve("dist/arrendia-login-runtime.css");
+const markPath = path.resolve("dist/arrendia-mark.svg");
 
-if (!cssFiles.length) {
-  throw new Error("El build privado no generó archivos CSS.");
-}
+await Promise.all([access(indexPath), access(themePath), access(markPath)]);
 
-const compiledCss = (await Promise.all(cssFiles.map((file) => readFile(file, "utf8")))).join("\n");
-const requiredMarkers = [
-  "arrendia-mark.svg",
-  "arrendia-mark-enter",
-  "arrendia-logo-pulse",
-  ".runtime-shell .login-page",
+const [indexHtml, themeCss] = await Promise.all([
+  readFile(indexPath, "utf8"),
+  readFile(themePath, "utf8"),
+]);
+
+const requiredIndexMarkers = [
+  "arrendia-login-runtime.css",
 ];
 
-const missingMarkers = requiredMarkers.filter((marker) => !compiledCss.includes(marker));
+const requiredThemeMarkers = [
+  "body .login-page .login-icon",
+  "arrendia-mark.svg?v=4",
+  "arrendia-mark-enter",
+  "arrendia-mark-float",
+  "arrendia-logo-pulse",
+  "display:none!important",
+];
 
-if (missingMarkers.length) {
-  throw new Error(`El tema de Arrendía no quedó incluido en el build: ${missingMarkers.join(", ")}`);
+const missingIndexMarkers = requiredIndexMarkers.filter((marker) => !indexHtml.includes(marker));
+const missingThemeMarkers = requiredThemeMarkers.filter((marker) => !themeCss.includes(marker));
+
+if (missingIndexMarkers.length || missingThemeMarkers.length) {
+  throw new Error(
+    `El acceso de Arrendía no quedó correctamente conectado: ${[
+      ...missingIndexMarkers,
+      ...missingThemeMarkers,
+    ].join(", ")}`,
+  );
 }
 
-if (compiledCss.includes("arrendia-login-hero.svg")) {
-  throw new Error("El build todavía incluye el panel gráfico antiguo del login.");
+if (themeCss.includes(".runtime-shell .login-page") || themeCss.includes("arrendia-login-hero.svg")) {
+  throw new Error("El tema del login todavía depende de una estructura inexistente o del panel gráfico antiguo.");
 }
 
-console.log("Tema limpio, logo y animaciones de Arrendía presentes en el build privado.");
+console.log("Logo real, animaciones y selectores del acceso de Arrendía validados en el build.");
