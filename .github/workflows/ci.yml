@@ -48,6 +48,9 @@ jobs:
           VITE_SUPABASE_ANON_KEY: placeholder-publishable-key
         run: npm run build
 
+      - name: Validate Arrendía theme bundle
+        run: node scripts/validate-arrendia-theme-build.mjs
+
       - name: Upload private build
         uses: actions/upload-artifact@v4
         with:
