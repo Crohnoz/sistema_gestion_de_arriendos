@@ -8,7 +8,6 @@ import "./typography.css";
 import "./thermalPrint.css";
 import "./runtime.css";
 import "./authEnhancements.css";
-import "./arrendiaLogin.css";
 import "./adminAccessibilityTools.css";
 
 const rootElement = document.getElementById("root");
