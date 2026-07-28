@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" role="img" aria-labelledby="title desc">
+  <title id="title">Arrendía, administración inteligente de arriendos</title>
+  <desc id="desc">Identidad visual del sistema privado de administración del Edificio 23.</desc>
+  <defs>
+    <linearGradient id="hero-mark" x1="26" y1="18" x2="136" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C527B"/>
+      <stop offset="0.58" stop-color="#103451"/>
+      <stop offset="1" stop-color="#0A2238"/>
+    </linearGradient>
+    <linearGradient id="hero-accent" x1="47" y1="118" x2="124" y2="51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#55D7AE"/>
+      <stop offset="1" stop-color="#C0F8E1"/>
+    </linearGradient>
+    <linearGradient id="hero-line" x1="84" y1="420" x2="690" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#73E0BC" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#73E0BC" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g opacity="0.24" fill="none" stroke="#9AC2DF">
+    <path d="M420 10v510M515 10v510M610 10v510M705 10v510"/>
+    <path d="M380 120h350M380 215h350M380 310h350M380 405h350"/>
+  </g>
+
+  <g transform="translate(34 34)">
+    <rect x="0" y="0" width="132" height="132" rx="34" fill="url(#hero-mark)"/>
+    <rect x="1" y="1" width="130" height="130" rx="33" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="2"/>
+    <path d="M27 105 59 39c1.8-3.8 7.3-3.8 9.1 0L101 105" fill="none" stroke="#F7FBFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 82h40" fill="none" stroke="#F7FBFF" stroke-width="9" stroke-linecap="round"/>
+    <path d="M32 108c20-5 40-18 62-47" fill="none" stroke="url(#hero-accent)" stroke-width="10" stroke-linecap="round"/>
+    <path d="m86 62 10-4-1 11" fill="none" stroke="#C0F8E1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="34" y="244" fill="#FFFFFF" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="84" font-weight="760" letter-spacing="-3">Arrendía</text>
+  <text x="38" y="294" fill="#C9DCEB" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="27" font-weight="500">Administración inteligente, simple y segura.</text>
+
+  <g transform="translate(36 344)" font-family="Inter, Segoe UI, Arial, sans-serif">
+    <rect x="0" y="0" width="178" height="58" rx="18" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.13"/>
+    <circle cx="28" cy="29" r="8" fill="#75E1BD"/>
+    <text x="48" y="36" fill="#F7FBFF" font-size="18" font-weight="650">Cobros claros</text>
+
+    <rect x="192" y="0" width="184" height="58" rx="18" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.13"/>
+    <circle cx="220" cy="29" r="8" fill="#75E1BD"/>
+    <text x="240" y="36" fill="#F7FBFF" font-size="18" font-weight="650">Datos privados</text>
+
+    <rect x="390" y="0" width="222" height="58" rx="18" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.13"/>
+    <circle cx="418" cy="29" r="8" fill="#75E1BD"/>
+    <text x="438" y="36" fill="#F7FBFF" font-size="18" font-weight="650">Guardado automático</text>
+  </g>
+
+  <path d="M38 446h640" stroke="url(#hero-line)" stroke-width="2"/>
+  <text x="38" y="492" fill="#AFC7D9" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="19">Edificio 23 · Arriendos, consumos, pagos y salidas en un solo lugar.</text>
+  <text x="38" y="530" fill="#7899B1" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" letter-spacing="2">UNA PLATAFORMA DE CROHNOZ LABS</text>
+</svg>
