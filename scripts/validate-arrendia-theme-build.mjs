@@ -14,9 +14,9 @@ if (!cssFiles.length) {
 const compiledCss = (await Promise.all(cssFiles.map((file) => readFile(file, "utf8")))).join("\n");
 const requiredMarkers = [
   "arrendia-mark.svg",
-  "arrendia-login-hero.svg",
   "arrendia-mark-enter",
-  "arrendia-hero-panel-enter",
+  "arrendia-logo-pulse",
+  ".runtime-shell .login-page",
 ];
 
 const missingMarkers = requiredMarkers.filter((marker) => !compiledCss.includes(marker));
@@ -25,4 +25,8 @@ if (missingMarkers.length) {
   throw new Error(`El tema de Arrendía no quedó incluido en el build: ${missingMarkers.join(", ")}`);
 }
 
-console.log("Tema visual y animaciones de Arrendía presentes en el build privado.");
+if (compiledCss.includes("arrendia-login-hero.svg")) {
+  throw new Error("El build todavía incluye el panel gráfico antiguo del login.");
+}
+
+console.log("Tema limpio, logo y animaciones de Arrendía presentes en el build privado.");
