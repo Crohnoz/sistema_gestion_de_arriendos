@@ -35,3 +35,20 @@ export const PRODUCT_NAME = resolveProductName(
   hostname,
   import.meta.env.VITE_PRODUCT_NAME || "",
 );
+
+if (typeof document !== "undefined") {
+  document.title = IS_PRIVATE
+    ? `${PRODUCT_NAME} · Administración privada`
+    : PRODUCT_NAME;
+
+  if (IS_PRIVATE) {
+    let favicon = document.querySelector("link[rel~='icon']");
+    if (!favicon) {
+      favicon = document.createElement("link");
+      favicon.rel = "icon";
+      favicon.type = "image/svg+xml";
+      document.head.appendChild(favicon);
+    }
+    favicon.href = "/arrendia-mark.svg";
+  }
+}
