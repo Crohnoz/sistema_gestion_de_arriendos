@@ -2,10 +2,15 @@ import assert from "node:assert/strict";
 import { resolveAppMode, resolveProductName } from "../src/environmentRouting.js";
 
 const cases = [
-  ["arriendos-23.netlify.app", "", "private"],
+  ["arrendia.netlify.app", "demo", "private"],
+  ["main--arrendia.netlify.app", "demo", "private"],
+  ["arriendos-23.netlify.app", "demo", "private"],
   ["6a682a6d65fe0000080f078c--arriendos-23.netlify.app", "demo", "private"],
+  ["crohnoz-property.netlify.app", "private", "demo"],
+  ["main--crohnoz-property.netlify.app", "private", "demo"],
   ["sistema-administrativo-arriendos.netlify.app", "private", "demo"],
   ["main--sistema-administrativo-arriendos.netlify.app", "private", "demo"],
+  ["sitio-renombrado.netlify.app", "private", "private"],
   ["localhost", "private", "private"],
   ["localhost", "", "demo"],
 ];
@@ -18,10 +23,16 @@ for (const [hostname, configuredMode, expectedMode] of cases) {
   );
 }
 
-assert.equal(resolveProductName("arriendos-23.netlify.app"), "Arriendos 23");
+assert.equal(resolveProductName("arrendia.netlify.app"), "Arrendía");
+assert.equal(resolveProductName("arriendos-23.netlify.app"), "Arrendía");
+assert.equal(resolveProductName("crohnoz-property.netlify.app"), "Crohnoz Property · Demo");
 assert.equal(
   resolveProductName("sistema-administrativo-arriendos.netlify.app"),
-  "Sistema Administrativo de Arriendos · Demo",
+  "Crohnoz Property · Demo",
+);
+assert.equal(
+  resolveProductName("sitio-renombrado.netlify.app", "Nombre configurado"),
+  "Nombre configurado",
 );
 
 console.log("Environment routing validated successfully.");
