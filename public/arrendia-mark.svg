@@ -1,24 +1,62 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Arrendía</title>
-  <desc id="desc">Monograma A con una trayectoria ascendente que representa administración y crecimiento.</desc>
+  <desc id="desc">Monograma arquitectónico A con una trayectoria ascendente que representa administración, confianza y progreso.</desc>
   <defs>
-    <linearGradient id="arrendia-bg" x1="18" y1="12" x2="112" y2="118" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#123A5A"/>
-      <stop offset="0.56" stop-color="#0C2742"/>
-      <stop offset="1" stop-color="#071C30"/>
+    <linearGradient id="arrendia-shell" x1="18" y1="10" x2="111" y2="119" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D5C88"/>
+      <stop offset="0.5" stop-color="#103B5D"/>
+      <stop offset="1" stop-color="#071D31"/>
     </linearGradient>
-    <linearGradient id="arrendia-accent" x1="38" y1="98" x2="96" y2="48" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#57D7B0"/>
-      <stop offset="1" stop-color="#B4F2D8"/>
+    <linearGradient id="arrendia-a" x1="36" y1="31" x2="94" y2="99" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DDECF6"/>
     </linearGradient>
-    <filter id="arrendia-shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#03101D" flood-opacity="0.24"/>
+    <linearGradient id="arrendia-orbit" x1="25" y1="101" x2="103" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#35C999"/>
+      <stop offset="0.58" stop-color="#76E2BE"/>
+      <stop offset="1" stop-color="#C8F9E7"/>
+    </linearGradient>
+    <radialGradient id="arrendia-glow" cx="0" cy="0" r="1" gradientTransform="translate(91 37) rotate(130) scale(67 58)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8CE9C9" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#8CE9C9" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="arrendia-shadow" x="-35%" y="-35%" width="170%" height="180%">
+      <feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#020D17" flood-opacity="0.34"/>
+    </filter>
+    <filter id="arrendia-soft-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <rect x="4" y="4" width="120" height="120" rx="31" fill="url(#arrendia-bg)" filter="url(#arrendia-shadow)"/>
-  <rect x="5" y="5" width="118" height="118" rx="30" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="2"/>
-  <path d="M29 96 59.5 34.5c1.8-3.7 7.1-3.7 8.9 0L99 96" fill="none" stroke="#F7FBFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M45 75h37" fill="none" stroke="#F7FBFF" stroke-width="9" stroke-linecap="round"/>
-  <path d="M35 99c18-5 36-17 56-43" fill="none" stroke="url(#arrendia-accent)" stroke-width="10" stroke-linecap="round"/>
-  <path d="m83 57 10-4-1 11" fill="none" stroke="#B4F2D8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <style>
+    #arrendia-shell-group{transform-origin:64px 64px;animation:arrendia-shell-enter .72s cubic-bezier(.2,.82,.25,1) both,arrendia-shell-breathe 6s ease-in-out 1.1s infinite}
+    #arrendia-a-main{stroke-dasharray:210;stroke-dashoffset:210;animation:arrendia-draw-a .9s cubic-bezier(.2,.72,.3,1) .12s forwards}
+    #arrendia-a-bar{stroke-dasharray:48;stroke-dashoffset:48;animation:arrendia-draw-bar .45s ease-out .68s forwards}
+    #arrendia-door{opacity:0;transform-origin:64px 88px;animation:arrendia-door-enter .4s ease-out .78s forwards}
+    #arrendia-orbit-path{stroke-dasharray:122;stroke-dashoffset:122;animation:arrendia-draw-orbit 1s cubic-bezier(.2,.72,.25,1) .54s forwards}
+    #arrendia-orbit-tip{opacity:0;transform-origin:96px 48px;animation:arrendia-tip-enter .36s ease-out 1.18s forwards}
+    #arrendia-glint{opacity:0;animation:arrendia-glint 5.8s ease-in-out 1.5s infinite}
+    @keyframes arrendia-shell-enter{from{opacity:0;transform:scale(.82) rotate(-4deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+    @keyframes arrendia-shell-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.5px) scale(1.012)}}
+    @keyframes arrendia-draw-a{to{stroke-dashoffset:0}}
+    @keyframes arrendia-draw-bar{to{stroke-dashoffset:0}}
+    @keyframes arrendia-door-enter{from{opacity:0;transform:translateY(5px) scaleY(.75)}to{opacity:1;transform:translateY(0) scaleY(1)}}
+    @keyframes arrendia-draw-orbit{to{stroke-dashoffset:0}}
+    @keyframes arrendia-tip-enter{from{opacity:0;transform:scale(.3) rotate(-14deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+    @keyframes arrendia-glint{0%,70%,100%{opacity:0;transform:translateX(-22px)}78%{opacity:.72}90%{opacity:0;transform:translateX(34px)}}
+    @media (prefers-reduced-motion:reduce){
+      #arrendia-shell-group,#arrendia-a-main,#arrendia-a-bar,#arrendia-door,#arrendia-orbit-path,#arrendia-orbit-tip,#arrendia-glint{animation:none!important;opacity:1;stroke-dashoffset:0;transform:none}
+    }
+  </style>
+  <g id="arrendia-shell-group" filter="url(#arrendia-shadow)">
+    <path d="M34 7h60c15.5 0 27 12 27 27v47c0 21.5-14.5 33.5-57 41-42.5-7.5-57-19.5-57-41V34C7 19 18.5 7 34 7Z" fill="url(#arrendia-shell)"/>
+    <path d="M34.5 8.5h59c14.5 0 26 11.3 26 25.7v46.4c0 20.1-13.6 31.5-55.5 39-41.9-7.5-55.5-18.9-55.5-39V34.2c0-14.4 11.5-25.7 26-25.7Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2"/>
+    <path d="M18 28c28-18 65-18 92 1v24c-26-13-61-13-92 0V28Z" fill="url(#arrendia-glow)"/>
+    <path id="arrendia-a-main" d="M30 94 57.5 36.5c2.4-5 9.6-5 12 0L98 94" fill="none" stroke="url(#arrendia-a)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="arrendia-a-bar" d="M46 74h37" fill="none" stroke="url(#arrendia-a)" stroke-width="9" stroke-linecap="round"/>
+    <path id="arrendia-door" d="M56 96V82.5c0-4.8 3.6-8.5 8-8.5s8 3.7 8 8.5V96" fill="#0A2942" stroke="#A9D8EE" stroke-opacity="0.28" stroke-width="2"/>
+    <path id="arrendia-orbit-path" d="M27 99c20-3.5 43-17 69-49" fill="none" stroke="url(#arrendia-orbit)" stroke-width="10" stroke-linecap="round" filter="url(#arrendia-soft-glow)"/>
+    <path id="arrendia-orbit-tip" d="M87.5 52.5 101 45l-3.5 15.2c-3.7-2.3-6.6-4.8-10-7.7Z" fill="#C8F9E7"/>
+    <path id="arrendia-glint" d="M31 32 63 18" fill="none" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="3" stroke-linecap="round"/>
+  </g>
 </svg>

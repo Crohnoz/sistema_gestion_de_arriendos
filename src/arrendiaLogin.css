@@ -27,6 +27,7 @@
 
 .login-page::before{
   align-self:center;
+  animation:arrendia-hero-panel-enter .8s cubic-bezier(.2,.8,.25,1) both,arrendia-hero-panel-float 8s ease-in-out 1.2s infinite;
   background:url('/arrendia-login-hero.svg') center/contain no-repeat;
   content:"";
   display:block;
@@ -34,6 +35,7 @@
   max-width:760px;
   min-height:430px;
   opacity:.98;
+  transform-origin:center;
   width:100%;
   z-index:1;
 }
@@ -93,14 +95,45 @@
 }
 
 .login-icon{
+  animation:arrendia-mark-enter .72s cubic-bezier(.2,.82,.25,1) .08s both,arrendia-mark-float 6s ease-in-out 1.1s infinite;
   background:url('/arrendia-mark.svg') center/cover no-repeat;
-  border-radius:22px;
-  box-shadow:0 15px 32px rgba(10,34,56,.2);
-  height:82px;
-  margin-bottom:22px;
+  border-radius:24px 24px 31px 31px;
+  box-shadow:0 15px 32px rgba(10,34,56,.22);
+  height:84px;
+  margin-bottom:23px;
   position:relative;
-  width:82px;
+  transform-origin:center;
+  transition:filter .3s ease,box-shadow .3s ease;
+  width:84px;
   z-index:1;
+}
+
+.login-icon::before{
+  animation:arrendia-mark-glow 5.8s ease-in-out 1.4s infinite;
+  background:radial-gradient(circle,rgba(87,215,176,.34),rgba(56,137,190,.12) 48%,transparent 72%);
+  border-radius:50%;
+  content:"";
+  inset:-17px;
+  opacity:.65;
+  pointer-events:none;
+  position:absolute;
+  z-index:-1;
+}
+
+.login-icon::after{
+  animation:arrendia-mark-ring 5.8s ease-in-out 1.4s infinite;
+  border:1px solid rgba(87,215,176,.34);
+  border-radius:30px 30px 37px 37px;
+  content:"";
+  inset:-7px;
+  opacity:0;
+  pointer-events:none;
+  position:absolute;
+}
+
+.login-icon:hover{
+  box-shadow:0 19px 38px rgba(10,34,56,.28);
+  filter:saturate(1.08) brightness(1.02);
 }
 
 .login-icon svg{
@@ -303,6 +336,49 @@
   }
 }
 
+@keyframes arrendia-hero-panel-enter{
+  from{
+    opacity:0;
+    transform:translateX(-26px) scale(.98);
+  }
+  to{
+    opacity:.98;
+    transform:translateX(0) scale(1);
+  }
+}
+
+@keyframes arrendia-hero-panel-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+
+@keyframes arrendia-mark-enter{
+  from{
+    opacity:0;
+    transform:translateY(10px) scale(.84) rotate(-4deg);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1) rotate(0);
+  }
+}
+
+@keyframes arrendia-mark-float{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-5px) rotate(.6deg)}
+}
+
+@keyframes arrendia-mark-glow{
+  0%,100%{opacity:.42;transform:scale(.94)}
+  50%{opacity:.78;transform:scale(1.08)}
+}
+
+@keyframes arrendia-mark-ring{
+  0%,62%,100%{opacity:0;transform:scale(.92)}
+  72%{opacity:.5}
+  88%{opacity:0;transform:scale(1.12)}
+}
+
 @media (max-width:1080px){
   .login-page{
     grid-template-columns:1fr;
@@ -336,10 +412,10 @@
   }
 
   .login-icon{
-    border-radius:19px;
-    height:70px;
-    margin-bottom:19px;
-    width:70px;
+    border-radius:21px 21px 27px 27px;
+    height:72px;
+    margin-bottom:20px;
+    width:72px;
   }
 
   .login-card h1{
@@ -363,11 +439,16 @@
 }
 
 @media (prefers-reduced-motion:reduce){
-  .login-card{
+  .login-page::before,
+  .login-card,
+  .login-icon,
+  .login-icon::before,
+  .login-icon::after{
     animation:none;
   }
 
   .auth-tabs button,
+  .login-icon,
   .login-submit,
   .login-submit::before{
     transition:none;
