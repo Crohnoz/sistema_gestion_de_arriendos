@@ -1,0 +1,375 @@
+:root{
+  --arrendia-navy:#0a2238;
+  --arrendia-blue:#174c73;
+  --arrendia-blue-soft:#e9f2f8;
+  --arrendia-mint:#57d7b0;
+  --arrendia-mint-soft:#eafaf4;
+  --arrendia-ink:#10263a;
+  --arrendia-muted:#66798a;
+  --arrendia-line:#d8e3ec;
+}
+
+.login-page{
+  align-items:center;
+  background:
+    radial-gradient(circle at 16% 14%,rgba(87,215,176,.16),transparent 26%),
+    radial-gradient(circle at 72% 86%,rgba(83,151,202,.18),transparent 30%),
+    linear-gradient(135deg,#061726 0%,#0a2238 46%,#0d304d 100%);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(430px,500px);
+  gap:clamp(36px,6vw,96px);
+  isolation:isolate;
+  overflow:hidden;
+  padding:clamp(32px,5vw,76px);
+  position:relative;
+  text-align:left;
+}
+
+.login-page::before{
+  align-self:center;
+  background:url('/arrendia-login-hero.svg') center/contain no-repeat;
+  content:"";
+  display:block;
+  justify-self:center;
+  max-width:760px;
+  min-height:430px;
+  opacity:.98;
+  width:100%;
+  z-index:1;
+}
+
+.login-page::after{
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  content:"";
+  inset:0;
+  mask-image:linear-gradient(90deg,#000,transparent 72%);
+  pointer-events:none;
+  position:absolute;
+  z-index:0;
+}
+
+.login-card{
+  animation:arrendia-login-enter .55s cubic-bezier(.2,.75,.25,1) both;
+  backdrop-filter:blur(22px);
+  background:rgba(255,255,255,.975);
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:30px;
+  box-shadow:
+    0 34px 90px rgba(1,12,22,.34),
+    0 8px 24px rgba(5,29,47,.18),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  box-sizing:border-box;
+  justify-self:end;
+  max-width:500px;
+  overflow:hidden;
+  padding:44px 44px 38px;
+  position:relative;
+  width:100%;
+  z-index:2;
+}
+
+.login-card::before{
+  background:linear-gradient(90deg,var(--arrendia-mint),#72b9e7 55%,transparent);
+  content:"";
+  height:4px;
+  left:0;
+  position:absolute;
+  right:0;
+  top:0;
+}
+
+.login-card::after{
+  background:radial-gradient(circle,rgba(87,215,176,.13),transparent 68%);
+  content:"";
+  height:210px;
+  pointer-events:none;
+  position:absolute;
+  right:-95px;
+  top:-100px;
+  width:210px;
+}
+
+.login-icon{
+  background:url('/arrendia-mark.svg') center/cover no-repeat;
+  border-radius:22px;
+  box-shadow:0 15px 32px rgba(10,34,56,.2);
+  height:82px;
+  margin-bottom:22px;
+  position:relative;
+  width:82px;
+  z-index:1;
+}
+
+.login-icon svg{
+  display:none;
+}
+
+.login-eyebrow{
+  color:#26765f;
+  display:inline-flex;
+  font-size:.76rem;
+  font-weight:850;
+  letter-spacing:.14em;
+  line-height:1;
+  position:relative;
+  text-transform:uppercase;
+  z-index:1;
+}
+
+.login-card h1{
+  color:var(--arrendia-ink);
+  font-size:clamp(2.15rem,4vw,2.7rem);
+  font-weight:850;
+  letter-spacing:-.055em;
+  line-height:1.05;
+  margin:10px 0 12px;
+  position:relative;
+  z-index:1;
+}
+
+.login-card > p{
+  color:var(--arrendia-muted);
+  font-size:1rem;
+  line-height:1.65;
+  margin:0 0 27px;
+  max-width:390px;
+  position:relative;
+  z-index:1;
+}
+
+.auth-tabs{
+  background:#edf3f7;
+  border:1px solid #e2eaf0;
+  border-radius:15px;
+  gap:4px;
+  margin-bottom:24px;
+  padding:5px;
+  position:relative;
+  z-index:1;
+}
+
+.auth-tabs button{
+  border-radius:11px;
+  min-height:42px;
+  transition:background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+
+.auth-tabs button:hover{
+  color:var(--arrendia-blue);
+}
+
+.auth-tabs button.active{
+  background:#fff;
+  box-shadow:0 5px 14px rgba(17,55,83,.11);
+  color:var(--arrendia-navy);
+  transform:translateY(-1px);
+}
+
+.login-card form{
+  gap:18px;
+  position:relative;
+  z-index:1;
+}
+
+.login-card label{
+  gap:9px;
+}
+
+.login-card label span{
+  color:#20384c;
+  font-size:.88rem;
+  font-weight:800;
+  letter-spacing:.005em;
+}
+
+.login-card input{
+  background-color:#fbfdff;
+  background-position:16px center;
+  background-repeat:no-repeat;
+  background-size:20px 20px;
+  border:1px solid var(--arrendia-line);
+  border-radius:14px;
+  color:var(--arrendia-ink);
+  font-size:1rem;
+  min-height:54px;
+  padding:13px 16px 13px 48px;
+  transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease;
+}
+
+.login-card input[type="email"]{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23577084' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='16' x='2' y='4' rx='3'/%3E%3Cpath d='m22 7-8.8 5.5a2.3 2.3 0 0 1-2.4 0L2 7'/%3E%3C/svg%3E");
+}
+
+.login-card input[type="password"]{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23577084' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='13' x='3' y='9' rx='3'/%3E%3Cpath d='M7 9V6a5 5 0 0 1 10 0v3'/%3E%3Cpath d='M12 14v3'/%3E%3C/svg%3E");
+}
+
+.login-card input:hover{
+  border-color:#b5c8d7;
+}
+
+.login-card input:focus{
+  background-color:#fff;
+  border-color:#3c86b7;
+  box-shadow:0 0 0 4px rgba(60,134,183,.13),0 8px 22px rgba(17,61,91,.08);
+}
+
+.auth-link-button{
+  color:#236c9c;
+  font-size:.88rem;
+  margin-top:-8px;
+  text-decoration:none;
+  text-underline-offset:4px;
+  transition:color .2s ease;
+}
+
+.auth-link-button:hover{
+  color:#0e466c;
+  text-decoration:underline;
+}
+
+.login-submit{
+  background:linear-gradient(135deg,#174f77,#0c2f4c);
+  border-radius:14px;
+  box-shadow:0 12px 24px rgba(15,56,86,.2);
+  font-size:1rem;
+  min-height:54px;
+  overflow:hidden;
+  position:relative;
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+
+.login-submit::before{
+  background:linear-gradient(110deg,transparent 15%,rgba(255,255,255,.22) 48%,transparent 82%);
+  content:"";
+  inset:0;
+  position:absolute;
+  transform:translateX(-120%);
+  transition:transform .55s ease;
+}
+
+.login-submit:hover:not(:disabled){
+  box-shadow:0 16px 30px rgba(15,56,86,.27);
+  filter:saturate(1.08);
+  transform:translateY(-2px);
+}
+
+.login-submit:hover:not(:disabled)::before{
+  transform:translateX(120%);
+}
+
+.login-submit:active:not(:disabled){
+  transform:translateY(0);
+}
+
+.runtime-error,
+.runtime-notice{
+  border-radius:13px;
+  line-height:1.45;
+  padding:12px 14px;
+}
+
+.security-note{
+  align-items:center;
+  background:var(--arrendia-mint-soft);
+  border:1px solid #ccefe1;
+  border-radius:14px;
+  color:#386b59;
+  margin-top:25px;
+  padding:14px 15px;
+}
+
+.security-note svg{
+  color:#278866;
+  flex:0 0 auto;
+}
+
+.security-note span{
+  font-size:.82rem;
+  line-height:1.5;
+}
+
+@keyframes arrendia-login-enter{
+  from{
+    opacity:0;
+    transform:translateY(18px) scale(.985);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@media (max-width:1080px){
+  .login-page{
+    grid-template-columns:1fr;
+    justify-items:center;
+  }
+
+  .login-page::before{
+    display:none;
+  }
+
+  .login-card{
+    justify-self:center;
+  }
+}
+
+@media (max-width:620px){
+  .login-page{
+    align-items:flex-start;
+    background:
+      radial-gradient(circle at 50% -5%,rgba(87,215,176,.24),transparent 34%),
+      linear-gradient(160deg,#071a2b 0%,#0b2943 44%,#eef5f8 44.2%,#f8fbfd 100%);
+    min-height:100svh;
+    padding:24px 15px 28px;
+  }
+
+  .login-card{
+    border-radius:24px;
+    box-shadow:0 24px 56px rgba(4,28,46,.25);
+    margin-top:24px;
+    padding:30px 23px 25px;
+  }
+
+  .login-icon{
+    border-radius:19px;
+    height:70px;
+    margin-bottom:19px;
+    width:70px;
+  }
+
+  .login-card h1{
+    font-size:2.2rem;
+  }
+
+  .login-card > p{
+    font-size:.96rem;
+    line-height:1.55;
+    margin-bottom:22px;
+  }
+
+  .auth-tabs{
+    margin-bottom:21px;
+  }
+
+  .login-card input,
+  .login-submit{
+    min-height:52px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .login-card{
+    animation:none;
+  }
+
+  .auth-tabs button,
+  .login-submit,
+  .login-submit::before{
+    transition:none;
+  }
+}
