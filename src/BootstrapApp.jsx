@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   Database,
   Eye,
+  KeyRound,
   LoaderCircle,
   LockKeyhole,
   LogIn,
@@ -13,6 +14,10 @@ import {
 } from "lucide-react";
 import RentalAdminApp from "./App.jsx";
 import { demoSeed } from "./demoSeed";
+import {
+  PasswordChangeModal,
+  PasswordRecoveryScreen,
+} from "./PasswordManagement.jsx";
 import { createDebouncedWorkspaceWriter, installPrivateStorageBridge } from "./privateStorageBridge";
 import {
   IS_DEMO,
@@ -136,38 +141,76 @@ function LoginScreen({ supabase, error, setError }) {
     setSubmitting(false);
   }
 
+  async function submitRecovery(event) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError("");
+    setNotice("");
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const recoveryUrl = `${window.location.origin}/?passwordRecovery=1`;
+    const { error: recoveryError } = await supabase.auth.resetPasswordForEmail(
+      normalizedEmail,
+      { redirectTo: recoveryUrl },
+    );
+
+    if (recoveryError) {
+      setError("No fue posible enviar el correo de recuperación. Intente nuevamente.");
+    } else {
+      setNotice("Revise su correo. Si la cuenta existe, recibirá un enlace para crear una contraseña nueva.");
+    }
+
+    setSubmitting(false);
+  }
+
+  const formSubmit = mode === "login"
+    ? submitLogin
+    : mode === "signup"
+      ? submitSignup
+      : submitRecovery;
+
   return (
     <main className="login-page">
       <section className="login-card">
         <div className="login-icon">
-          {mode === "login" ? <LockKeyhole size={36} /> : <UserPlus size={36} />}
+          {mode === "login" ? (
+            <LockKeyhole size={36} />
+          ) : mode === "signup" ? (
+            <UserPlus size={36} />
+          ) : (
+            <KeyRound size={36} />
+          )}
         </div>
         <span className="login-eyebrow">Acceso privado</span>
         <h1>{PRODUCT_NAME}</h1>
         <p>
           {mode === "login"
             ? "Ingrese a la administración del edificio con su correo y contraseña."
-            : "Cree su contraseña usando el correo que recibió la invitación."}
+            : mode === "signup"
+              ? "Cree su contraseña usando el correo que recibió la invitación."
+              : "Ingrese su correo para recibir un enlace seguro de recuperación."}
         </p>
 
-        <div className="auth-tabs" role="tablist" aria-label="Tipo de acceso">
-          <button
-            type="button"
-            className={mode === "login" ? "active" : ""}
-            onClick={() => switchMode("login")}
-          >
-            Ingresar
-          </button>
-          <button
-            type="button"
-            className={mode === "signup" ? "active" : ""}
-            onClick={() => switchMode("signup")}
-          >
-            Crear acceso
-          </button>
-        </div>
+        {mode !== "recover" && (
+          <div className="auth-tabs" role="tablist" aria-label="Tipo de acceso">
+            <button
+              type="button"
+              className={mode === "login" ? "active" : ""}
+              onClick={() => switchMode("login")}
+            >
+              Ingresar
+            </button>
+            <button
+              type="button"
+              className={mode === "signup" ? "active" : ""}
+              onClick={() => switchMode("signup")}
+            >
+              Crear acceso
+            </button>
+          </div>
+        )}
 
-        <form onSubmit={mode === "login" ? submitLogin : submitSignup}>
+        <form onSubmit={formSubmit}>
           <label>
             <span>Correo electrónico</span>
             <input
@@ -178,17 +221,21 @@ function LoginScreen({ supabase, error, setError }) {
               onChange={(event) => setEmail(event.target.value)}
             />
           </label>
-          <label>
-            <span>{mode === "login" ? "Contraseña" : "Cree una contraseña"}</span>
-            <input
-              type="password"
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-              required
-              minLength={12}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
+
+          {mode !== "recover" && (
+            <label>
+              <span>{mode === "login" ? "Contraseña" : "Cree una contraseña"}</span>
+              <input
+                type="password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                required
+                minLength={12}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </label>
+          )}
+
           {mode === "signup" && (
             <label>
               <span>Repita la contraseña</span>
@@ -202,22 +249,40 @@ function LoginScreen({ supabase, error, setError }) {
               />
             </label>
           )}
+
+          {mode === "login" && (
+            <button className="auth-link-button" type="button" onClick={() => switchMode("recover")}>
+              ¿Olvidó su contraseña?
+            </button>
+          )}
+
           {error && <div className="runtime-error" role="alert">{error}</div>}
           {notice && <div className="runtime-notice" role="status">{notice}</div>}
+
           <button className="login-submit" type="submit" disabled={submitting}>
             {submitting ? (
               <LoaderCircle className="runtime-spinner" size={20} />
             ) : mode === "login" ? (
               <LogIn size={20} />
-            ) : (
+            ) : mode === "signup" ? (
               <UserPlus size={20} />
+            ) : (
+              <KeyRound size={20} />
             )}
             {submitting
               ? "Procesando…"
               : mode === "login"
                 ? "Ingresar"
-                : "Crear mi acceso"}
+                : mode === "signup"
+                  ? "Crear mi acceso"
+                  : "Enviar enlace de recuperación"}
           </button>
+
+          {mode === "recover" && (
+            <button className="auth-link-button auth-link-centered" type="button" onClick={() => switchMode("login")}>
+              Volver a ingresar
+            </button>
+          )}
         </form>
 
         <div className="security-note">
@@ -245,7 +310,7 @@ function DemoBar() {
   );
 }
 
-function PrivateBar({ email, role, syncStatus, onLogout }) {
+function PrivateBar({ email, role, syncStatus, onChangePassword, onLogout }) {
   const statusText = {
     loading: "Cargando datos…",
     saving: "Guardando cambios…",
@@ -268,18 +333,28 @@ function PrivateBar({ email, role, syncStatus, onLogout }) {
         <span className="role-badge">{roleText}</span>
         <span className={`sync-status ${syncStatus}`}><Database size={16} /> {statusText}</span>
       </div>
-      <button onClick={onLogout}><LogOut size={17} /> Cerrar sesión</button>
+      <div className="private-bar-actions">
+        <button onClick={onChangePassword}><KeyRound size={17} /> Cambiar contraseña</button>
+        <button onClick={onLogout}><LogOut size={17} /> Cerrar sesión</button>
+      </div>
     </div>
   );
 }
 
 export default function BootstrapApp() {
+  const recoveryRequested = useMemo(
+    () => new URLSearchParams(window.location.search).get("passwordRecovery") === "1",
+    [],
+  );
   const [phase, setPhase] = useState(IS_DEMO ? "loading" : "auth-loading");
   const [session, setSession] = useState(null);
   const [error, setError] = useState("");
   const [syncStatus, setSyncStatus] = useState("loading");
   const [workspaceRole, setWorkspaceRole] = useState(null);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [passwordRecoveryActive, setPasswordRecoveryActive] = useState(recoveryRequested);
   const authenticatedUserId = useRef(null);
+  const passwordRecoveryRef = useRef(recoveryRequested);
 
   const supabase = useMemo(() => {
     if (!IS_PRIVATE || !SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
@@ -312,10 +387,15 @@ export default function BootstrapApp() {
       if (!mounted) return;
       authenticatedUserId.current = data.session?.user?.id || null;
       setSession(data.session);
-      setPhase(data.session ? "workspace-loading" : "unauthenticated");
+
+      if (data.session && passwordRecoveryRef.current) {
+        setPhase("password-recovery");
+      } else {
+        setPhase(data.session ? "workspace-loading" : "unauthenticated");
+      }
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!mounted) return;
 
       const nextUserId = nextSession?.user?.id || null;
@@ -323,10 +403,20 @@ export default function BootstrapApp() {
       authenticatedUserId.current = nextUserId;
       setSession(nextSession);
 
+      if (event === "PASSWORD_RECOVERY") {
+        passwordRecoveryRef.current = true;
+        setPasswordRecoveryActive(true);
+        setPhase("password-recovery");
+        return;
+      }
+
       if (!nextSession) {
         setWorkspaceRole(null);
+        setPasswordDialogOpen(false);
         setPhase("unauthenticated");
       } else if (userChanged) {
+        passwordRecoveryRef.current = false;
+        setPasswordRecoveryActive(false);
         setPhase("workspace-loading");
       }
     });
@@ -338,7 +428,7 @@ export default function BootstrapApp() {
   }, [supabase]);
 
   useEffect(() => {
-    if (!IS_PRIVATE || !supabase || !session?.user) return;
+    if (!IS_PRIVATE || !supabase || !session?.user || passwordRecoveryActive) return;
 
     let active = true;
     let uninstallBridge = null;
@@ -397,11 +487,18 @@ export default function BootstrapApp() {
       writer?.cancel?.();
       uninstallBridge?.();
     };
-  }, [session?.user?.id, supabase]);
+  }, [session?.user?.id, supabase, passwordRecoveryActive]);
 
   async function logout() {
+    setPasswordDialogOpen(false);
     setPhase("auth-loading");
     await supabase.auth.signOut();
+  }
+
+  function completePasswordRecovery() {
+    passwordRecoveryRef.current = false;
+    setPasswordRecoveryActive(false);
+    setPhase("workspace-loading");
   }
 
   if (phase === "configuration-error") {
@@ -410,6 +507,10 @@ export default function BootstrapApp() {
 
   if (phase === "unauthenticated") {
     return <LoginScreen supabase={supabase} error={error} setError={setError} />;
+  }
+
+  if (phase === "password-recovery" && session) {
+    return <PasswordRecoveryScreen supabase={supabase} onComplete={completePasswordRecovery} />;
   }
 
   if (phase === "access-denied") {
@@ -440,10 +541,18 @@ export default function BootstrapApp() {
           email={session?.user?.email || "Usuario autorizado"}
           role={workspaceRole}
           syncStatus={syncStatus}
+          onChangePassword={() => setPasswordDialogOpen(true)}
           onLogout={logout}
         />
       )}
       <RentalAdminApp />
+      {!IS_DEMO && (
+        <PasswordChangeModal
+          open={passwordDialogOpen}
+          supabase={supabase}
+          onClose={() => setPasswordDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }
