@@ -1,0 +1,114 @@
+name: Supabase database health check
+
+on:
+  schedule:
+    # GitHub cron uses UTC. Three read-only checks per day provide regular,
+    # legitimate application traffic without modifying business records.
+    - cron: "17 3,11,19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-database-healthcheck
+  cancel-in-progress: false
+
+jobs:
+  query-private-workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_URL: https://bjrwlpmxwpzhpjvfunbi.supabase.co
+      SUPABASE_ANON_KEY: sb_publishable_aPfIuDwem3YnWIDG63oU1w_j8-zJTn3
+      SUPABASE_KEEPALIVE_EMAIL: ${{ secrets.SUPABASE_KEEPALIVE_EMAIL }}
+      SUPABASE_KEEPALIVE_PASSWORD: ${{ secrets.SUPABASE_KEEPALIVE_PASSWORD }}
+
+    steps:
+      - name: Authenticate and run a read-only database query
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          supabase_url = os.environ["SUPABASE_URL"].rstrip("/")
+          anon_key = os.environ["SUPABASE_ANON_KEY"]
+          email = os.environ.get("SUPABASE_KEEPALIVE_EMAIL", "").strip().lower()
+          password = os.environ.get("SUPABASE_KEEPALIVE_PASSWORD", "")
+
+          missing = []
+          if not email:
+              missing.append("SUPABASE_KEEPALIVE_EMAIL")
+          if not password:
+              missing.append("SUPABASE_KEEPALIVE_PASSWORD")
+          if missing:
+              sys.exit(
+                  "Missing required GitHub Actions secrets: " + ", ".join(missing)
+              )
+
+          def open_json(request: urllib.request.Request):
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  body = error.read().decode("utf-8", errors="replace")
+                  raise RuntimeError(
+                      f"Supabase request failed with HTTP {error.code}: {body}"
+                  ) from error
+              except urllib.error.URLError as error:
+                  raise RuntimeError(f"Could not reach Supabase: {error.reason}") from error
+
+          auth_payload = json.dumps(
+              {"email": email, "password": password}
+          ).encode("utf-8")
+          auth_request = urllib.request.Request(
+              f"{supabase_url}/auth/v1/token?grant_type=password",
+              data=auth_payload,
+              method="POST",
+              headers={
+                  "apikey": anon_key,
+                  "Content-Type": "application/json",
+              },
+          )
+          auth_response = open_json(auth_request)
+
+          access_token = auth_response.get("access_token")
+          user_id = (auth_response.get("user") or {}).get("id")
+          if not access_token or not user_id:
+              raise RuntimeError("Supabase authentication returned no session or user ID.")
+
+          query = urllib.parse.urlencode(
+              {
+                  "select": "role,workspace_id,rental_workspaces!inner(id,updated_at)",
+                  "user_id": f"eq.{user_id}",
+                  "limit": "1",
+              }
+          )
+          database_request = urllib.request.Request(
+              f"{supabase_url}/rest/v1/rental_workspace_members?{query}",
+              method="GET",
+              headers={
+                  "apikey": anon_key,
+                  "Authorization": f"Bearer {access_token}",
+                  "Accept": "application/json",
+              },
+          )
+          rows = open_json(database_request)
+
+          if not isinstance(rows, list):
+              raise RuntimeError("Supabase returned an unexpected database response.")
+          if not rows:
+              raise RuntimeError(
+                  "The authenticated user has no visible rental workspace membership."
+              )
+
+          print(
+              "Supabase health check succeeded: authenticated and read one private "
+              "workspace membership without modifying business data."
+          )
+          PY
