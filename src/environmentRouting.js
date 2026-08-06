@@ -1,8 +1,14 @@
 const normalizeHostname = (hostname = "") => hostname.trim().toLowerCase();
 const normalizeMode = (mode = "") => mode.trim().toLowerCase();
 
-const PRIVATE_NETLIFY_SITES = ["arrendia", "arriendos-23"];
-const DEMO_NETLIFY_SITES = ["crohnoz-property", "sistema-administrativo-arriendos"];
+// The branded Arrendia hostname is the public product demonstration.
+// The Edificio 23 hostname remains the authenticated operational system.
+const PRIVATE_NETLIFY_SITES = ["arriendos-23"];
+const DEMO_NETLIFY_SITES = [
+  "arrendia",
+  "crohnoz-property",
+  "sistema-administrativo-arriendos",
+];
 
 export function isNetlifySiteOrDeploy(hostname, siteName) {
   const normalizedHostname = normalizeHostname(hostname);
@@ -33,6 +39,7 @@ export function resolveAppMode(hostname, environmentMode = "") {
 
 export function resolveProductName(hostname, configuredName = "") {
   if (isPrivateHostname(hostname)) return "Arrendía";
+  if (isNetlifySiteOrDeploy(hostname, "arrendia")) return "Arrendía · Demo";
   if (isDemoHostname(hostname)) return "Crohnoz Property · Demo";
 
   return configuredName || "Sistema Administrativo de Arriendos";
