@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { resolveAppMode, resolveProductName } from "../src/environmentRouting.js";
 
 const cases = [
-  ["arrendia.netlify.app", "demo", "private"],
-  ["main--arrendia.netlify.app", "demo", "private"],
+  ["arrendia.netlify.app", "private", "demo"],
+  ["main--arrendia.netlify.app", "private", "demo"],
   ["arriendos-23.netlify.app", "demo", "private"],
   ["6a682a6d65fe0000080f078c--arriendos-23.netlify.app", "demo", "private"],
   ["crohnoz-property.netlify.app", "private", "demo"],
@@ -23,7 +23,7 @@ for (const [hostname, configuredMode, expectedMode] of cases) {
   );
 }
 
-assert.equal(resolveProductName("arrendia.netlify.app"), "Arrendía");
+assert.equal(resolveProductName("arrendia.netlify.app"), "Arrendía · Demo");
 assert.equal(resolveProductName("arriendos-23.netlify.app"), "Arrendía");
 assert.equal(resolveProductName("crohnoz-property.netlify.app"), "Crohnoz Property · Demo");
 assert.equal(
